@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.networktables.*;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Solenoid;
 
 
 /**
@@ -37,6 +39,10 @@ public class Robot extends TimedRobot {
   CANSparkMax m2 = new CANSparkMax(4, MotorType.kBrushless);
   VictorSP g1 = new VictorSP(0);
   VictorSP g2 = new VictorSP(1);
+  Compressor c=new Compressor(0);
+  Solenoid s1 = new Solenoid(0);
+  Solenoid s2 = new Solenoid(1);
+  
   double x;
   double y;
   double t;
@@ -92,6 +98,8 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+    
+    
   }
 
   /**
@@ -168,14 +176,14 @@ public class Robot extends TimedRobot {
   t=j1.getRawAxis(2);
   m1.set(y+x);
   m2.set(-y+x);
-  if (t>.9)
+   if (t>.9)
     {
-      g1.set(1);
-      g2.set(-1);
+      s2.set(true);
+      s1.set(false);
     } else {
-      g1.set(0);
-     g2.set(0);
-    }
+      s2.set(false);
+      s1.set(true);
+    } 
   }
 
   /**
