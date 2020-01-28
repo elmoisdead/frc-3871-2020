@@ -50,6 +50,9 @@ public class Robot extends TimedRobot {
   private double m_LimelightDriveCommand = 0.0;
   private double m_LimelightSteerCommand = 0.0;
   private double ta;
+  boolean b=false;
+  boolean b1=false;
+  boolean debounce=false;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -174,9 +177,23 @@ public class Robot extends TimedRobot {
   x=j1.getX();
   y=j1.getY();
   t=j1.getRawAxis(2);
+  b=j1.getRawButton(2);
   m1.set(y+x);
   m2.set(-y+x);
-   if (t>.9)
+    if (b && !debounce && !b1)  {
+      b1 = true;
+      debounce = true;
+    }
+    else if (!b && debounce)
+    {
+      debounce=false;
+    }
+    else if (b && !debounce && b1)
+    {
+      debounce=true;
+      b1=false;
+    }
+   if (b1)
     {
       s2.set(true);
       s1.set(false);
