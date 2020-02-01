@@ -35,8 +35,13 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   Joystick j1 = new Joystick(0);
   Joystick j2 = new Joystick(1);
-  CANSparkMax m1 = new CANSparkMax(3, MotorType.kBrushless);
-  CANSparkMax m2 = new CANSparkMax(4, MotorType.kBrushless);
+  CANSparkMax m1 = new CANSparkMax(1, MotorType.kBrushless);
+  CANSparkMax m2 = new CANSparkMax(2, MotorType.kBrushless);
+  CANSparkMax m3 = new CANSparkMax(3, MotorType.kBrushless);
+  CANSparkMax m4 = new CANSparkMax(4, MotorType.kBrushless);
+  CANSparkMax m5 = new CANSparkMax(5, MotorType.kBrushless);
+  CANSparkMax m6 = new CANSparkMax(6, MotorType.kBrushless);
+
   VictorSP g1 = new VictorSP(0);
   VictorSP g2 = new VictorSP(1);
   Compressor c=new Compressor(0);
@@ -172,14 +177,19 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    m1.setOpenLoopRampRate(2);
-    m2.setOpenLoopRampRate(2);
+    m1.setOpenLoopRampRate(1);
+    m2.setOpenLoopRampRate(1);
+    m3.setOpenLoopRampRate(1);
+    m4.setOpenLoopRampRate(1);
+    m5.setOpenLoopRampRate(1);
+    m6.setOpenLoopRampRate(1);
   x=j1.getX();
   y=j1.getY();
   t=j1.getRawAxis(2);
   b=j1.getRawButton(2);
-  m1.set(y+x);
-  m2.set(-y+x);
+  m1.set(y+x); m3.set(y+x); m5.set(y+x);
+  m2.set(-y+x); m4.set(-y+x); m6.set(-y+x);
+
     if (b && !debounce && !b1)  {
       b1 = true;
       debounce = true;
