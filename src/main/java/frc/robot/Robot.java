@@ -66,10 +66,10 @@ public class Robot extends TimedRobot {
   public void Update_Limelight_Tracking()
   {
         // These numbers must be tuned for your Robot!  Be careful!
-        final double STEER_K = 0.01;                    // how hard to turn toward the target
+        final double STEER_K = 0.005;                    // how hard to turn toward the target
         final double DRIVE_K = 0.26;                    // how hard to drive fwd toward the target
         final double DESIRED_TARGET_AREA = 0.7833;        // Area of the target when the robot reaches the wall
-        final double MAX_DRIVE = 0.7;                   // Simple speed limit so we don't drive too fast
+        final double MAX_DRIVE = 0.5;                   // Simple speed limit so we don't drive too fast
 
         double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
         double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
@@ -100,6 +100,11 @@ public class Robot extends TimedRobot {
           drive_cmd = MAX_DRIVE;
         }
         m_LimelightDriveCommand = drive_cmd;
+  }
+  public void drive(double s,double t)
+  {
+    m1.set(s+t); m3.set(s+t); m5.set(s+t);
+    m2.set(-s+t); m4.set(-s+t); m6.set(-s+t);
   }
   @Override
   public void robotInit() {
@@ -147,20 +152,24 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     //switch (m_autoSelected) {
      // case kCustomAuto:
+     m1.setOpenLoopRampRate(0);
+    m2.setOpenLoopRampRate(0);
+    m3.setOpenLoopRampRate(0);
+    m4.setOpenLoopRampRate(0);
+    m5.setOpenLoopRampRate(0);
+    m6.setOpenLoopRampRate(0);
       Update_Limelight_Tracking();
 
         
       if (m_LimelightHasValidTarget)
       {
-      m1.set(m_LimelightSteerCommand+m_LimelightDriveCommand);
-      m2.set(m_LimelightSteerCommand-m_LimelightDriveCommand);
+      drive(m_LimelightDriveCommand, m_LimelightSteerCommand);
       System.out.println(ta);
       }
       
       else
       {
-        m1.set(0);
-        m2.set(0);
+        drive(0, 0);
       }
         //break;
       //case kDefaultAuto:
@@ -177,18 +186,17 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    m1.setOpenLoopRampRate(1);
-    m2.setOpenLoopRampRate(1);
-    m3.setOpenLoopRampRate(1);
-    m4.setOpenLoopRampRate(1);
-    m5.setOpenLoopRampRate(1);
-    m6.setOpenLoopRampRate(1);
+    m1.setOpenLoopRampRate(.5);
+    m2.setOpenLoopRampRate(.5);
+    m3.setOpenLoopRampRate(.5);
+    m4.setOpenLoopRampRate(.5);
+    m5.setOpenLoopRampRate(.5);
+    m6.setOpenLoopRampRate(.5);
   x=j1.getX();
   y=j1.getY();
   t=j1.getRawAxis(2);
   b=j1.getRawButton(2);
-  m1.set(y+x); m3.set(y+x); m5.set(y+x);
-  m2.set(-y+x); m4.set(-y+x); m6.set(-y+x);
+  drive(y, x);
 
     if (b && !debounce && !b1)  {
       b1 = true;
