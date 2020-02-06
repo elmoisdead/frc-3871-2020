@@ -101,8 +101,14 @@ public class Robot extends TimedRobot {
         }
         m_LimelightDriveCommand = drive_cmd;
   }
-  public void drive(double s,double t)
+  public void drive(double s,double t, double rr)
   {
+    m1.setOpenLoopRampRate(rr);
+    m2.setOpenLoopRampRate(rr);
+    m3.setOpenLoopRampRate(rr);
+    m4.setOpenLoopRampRate(rr);
+    m5.setOpenLoopRampRate(rr);
+    m6.setOpenLoopRampRate(rr);
     m1.set(s+t); m3.set(s+t); m5.set(s+t);
     m2.set(-s+t); m4.set(-s+t); m6.set(-s+t);
   }
@@ -150,13 +156,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    
-     m1.setOpenLoopRampRate(0);
-    m2.setOpenLoopRampRate(0);
-    m3.setOpenLoopRampRate(0);
-    m4.setOpenLoopRampRate(0);
-    m5.setOpenLoopRampRate(0);
-    m6.setOpenLoopRampRate(0);
       Update_Limelight_Tracking();
 
         
@@ -164,14 +163,14 @@ public class Robot extends TimedRobot {
       {
         s2.set(true);
         s1.set(false);
-      drive(m_LimelightDriveCommand, m_LimelightSteerCommand);
+      drive(m_LimelightDriveCommand, m_LimelightSteerCommand, 0);
       System.out.println(ta);
 
       }
       
       else
       {
-        drive(0, 0);
+        drive(0, 0, 0);
       }       
     
   }
@@ -181,18 +180,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    m1.setOpenLoopRampRate(.5);
-    m2.setOpenLoopRampRate(.5);
-    m3.setOpenLoopRampRate(.5);
-    m4.setOpenLoopRampRate(.5);
-    m5.setOpenLoopRampRate(.5);
-    m6.setOpenLoopRampRate(.5);
   x=j1.getX();
   y=j1.getY();
   t=j1.getRawAxis(2);
   b=j1.getRawButton(2);
-  drive(y, x);
-
+  drive(y, x, .5);
     if (b && !debounce && !b1)  {
       b1 = true;
       debounce = true;
