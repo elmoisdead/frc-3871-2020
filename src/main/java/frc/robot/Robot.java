@@ -108,8 +108,8 @@ public class Robot extends TimedRobot {
   }
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
+    m_chooser.setDefaultOption("low", kDefaultAuto);
+    m_chooser.addOption("high", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
     
     
@@ -150,8 +150,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    //switch (m_autoSelected) {
-     // case kCustomAuto:
+    
      m1.setOpenLoopRampRate(0);
     m2.setOpenLoopRampRate(0);
     m3.setOpenLoopRampRate(0);
@@ -163,22 +162,18 @@ public class Robot extends TimedRobot {
         
       if (m_LimelightHasValidTarget)
       {
+        s2.set(true);
+        s1.set(false);
       drive(m_LimelightDriveCommand, m_LimelightSteerCommand);
       System.out.println(ta);
+
       }
       
       else
       {
         drive(0, 0);
-      }
-        //break;
-      //case kDefaultAuto:
-      //default:
-        // Put default auto code here
-        //break;
-        
-        
-    //}
+      }       
+    
   }
 
   /**
