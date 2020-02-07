@@ -100,7 +100,7 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("low", kDefaultAuto);
     m_chooser.addOption("high", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
   }
 
   @Override
@@ -112,10 +112,12 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
 
     System.out.println("Auto selected: " + m_autoSelected);
+
   }
 
   @Override
   public void autonomousPeriodic() {
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
     Update_Limelight_Tracking();
 
     if (m_LimelightHasValidTarget) {
@@ -134,6 +136,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
     x = j1.getX();
     y = j1.getY();
     t = j1.getRawAxis(2);
