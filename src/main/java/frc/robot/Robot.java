@@ -138,7 +138,8 @@ public class Robot extends TimedRobot {
     y = j1.getY();
     t = j1.getRawAxis(2);
     b = j1.getRawButton(2);
-    drive(y, x, .5);
+    dpad = j1.getPOV();
+    drive(-y, x, 1);
     if (b && !debounce && !b1) {
       b1 = true;
       debounce = true;
@@ -157,11 +158,11 @@ public class Robot extends TimedRobot {
     }
 
     switch (dpad) {
-    case 90:
-      g1.set(1);
+    case 0:
+      g1.set(-.5);
       break;
     case 180:
-      g1.set(-1);
+      g1.set(.5);
       break;
     default:
       g1.set(0);
