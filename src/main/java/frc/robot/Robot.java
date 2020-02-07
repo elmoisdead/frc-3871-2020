@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.hal.sim.mockdata.RoboRioDataJNI;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.networktables.*;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -20,6 +21,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   Joystick j1 = new Joystick(0);
   Joystick j2 = new Joystick(1);
+
   CANSparkMax m1 = new CANSparkMax(1, MotorType.kBrushless);
   CANSparkMax m2 = new CANSparkMax(2, MotorType.kBrushless);
   CANSparkMax m3 = new CANSparkMax(3, MotorType.kBrushless);
@@ -28,7 +30,6 @@ public class Robot extends TimedRobot {
   CANSparkMax m6 = new CANSparkMax(6, MotorType.kBrushless);
 
   VictorSP g1 = new VictorSP(0);
-  VictorSP g2 = new VictorSP(1);
   Compressor c = new Compressor(0);
   Solenoid s1 = new Solenoid(0);
   Solenoid s2 = new Solenoid(1);
@@ -36,6 +37,7 @@ public class Robot extends TimedRobot {
   double x;
   double y;
   double t;
+  int dpad;
   private boolean m_LimelightHasValidTarget = false;
   private double m_LimelightDriveCommand = 0.0;
   private double m_LimelightSteerCommand = 0.0;
@@ -153,6 +155,18 @@ public class Robot extends TimedRobot {
       s2.set(false);
       s1.set(true);
     }
+
+    switch (dpad) {
+    case 90:
+      g1.set(1);
+      break;
+    case 180:
+      g1.set(-1);
+      break;
+    default:
+      g1.set(0);
+    }
+
   }
 
   @Override
