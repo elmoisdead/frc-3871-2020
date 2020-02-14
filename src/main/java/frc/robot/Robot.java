@@ -30,6 +30,7 @@ public class Robot extends TimedRobot {
   CANSparkMax m6 = new CANSparkMax(6, MotorType.kBrushless);
 
   VictorSP g1 = new VictorSP(0);
+  VictorSP g2 = new VictorSP(1);
   Compressor c = new Compressor(0);
   Solenoid s1 = new Solenoid(0);
   Solenoid s2 = new Solenoid(1);
@@ -171,6 +172,17 @@ public class Robot extends TimedRobot {
     default:
       g1.set(0);
     }
+    switch (dpad) {
+      case 90:
+      g2.set(.5);
+      break;
+    case 270:
+      g2.set(-.5);
+      break;
+    default:
+      g2.set(0);
+    }
+    
 
   }
 
