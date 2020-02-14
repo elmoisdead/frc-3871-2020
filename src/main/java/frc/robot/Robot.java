@@ -38,15 +38,16 @@ public class Robot extends TimedRobot {
   double y;
   double t;
   int dpad;
-  private boolean m_LimelightHasValidTarget = false;
+  
+  /* private boolean m_LimelightHasValidTarget = false;
   private double m_LimelightDriveCommand = 0.0;
   private double m_LimelightSteerCommand = 0.0;
-  private double ta;
+  private double ta; */
   boolean b = false;
   boolean b1 = false;
   boolean debounce = false;
 
-  public void Update_Limelight_Tracking() {
+  /* void Update_Limelight_Tracking() {
 
     final double STEER_K = 0.005;
     final double DRIVE_K = 0.26;
@@ -64,7 +65,7 @@ public class Robot extends TimedRobot {
       m_LimelightHasValidTarget = false;
       m_LimelightDriveCommand = 0.0;
       m_LimelightSteerCommand = 0.0;
-      return;
+      
     }
 
     m_LimelightHasValidTarget = true;
@@ -78,7 +79,7 @@ public class Robot extends TimedRobot {
       drive_cmd = MAX_DRIVE;
     }
     m_LimelightDriveCommand = drive_cmd;
-  }
+  } */
 
   public void drive(double s, double t, double rr) {
     m1.setOpenLoopRampRate(rr);
@@ -117,7 +118,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+    /* NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
     Update_Limelight_Tracking();
 
     if (m_LimelightHasValidTarget) {
@@ -130,13 +131,13 @@ public class Robot extends TimedRobot {
 
     else {
       drive(0, 0, 0);
-    }
+    } */
 
   }
 
   @Override
   public void teleopPeriodic() {
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+    /* NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1); */
     x = j1.getX();
     y = j1.getY();
     t = j1.getRawAxis(2);
