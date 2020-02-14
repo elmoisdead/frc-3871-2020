@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("low", kDefaultAuto);
     m_chooser.addOption("high", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+    /* NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1); */
   }
 
   @Override
