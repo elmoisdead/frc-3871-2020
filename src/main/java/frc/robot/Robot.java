@@ -161,11 +161,11 @@ public class Robot extends TimedRobot {
     if (!b1) {
       s2.set(true);
       s1.set(false);
-      drive(-y, x*.50, 0.1);
+      drive(-y, x*.25, 0.2);
     } else {
       s2.set(false);
       s1.set(true);
-      drive(-y, x*.125, 0.1);
+      drive(-y, x*.125, 0.2);
     }
 
     switch (dpad) {
