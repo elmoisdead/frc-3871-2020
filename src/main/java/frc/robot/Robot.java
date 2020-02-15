@@ -13,12 +13,15 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "aaaaaa";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+
   Joystick j1 = new Joystick(0);
   Joystick j2 = new Joystick(1);
 
@@ -89,10 +92,10 @@ public class Robot extends TimedRobot {
     m4.setOpenLoopRampRate(rr);
     m5.setOpenLoopRampRate(rr);
     m6.setOpenLoopRampRate(rr);
-    m1.set(s + t);
+   // m1.set(s + t);
     m3.set(s + t);
     m5.set(s + t);
-    m2.set(-s + t);
+   // m2.set(-s + t);
     m4.set(-s + t);
     m6.set(-s + t);
   }
@@ -114,6 +117,7 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
 
     System.out.println("Auto selected: " + m_autoSelected);
+    
 
   }
 
@@ -144,7 +148,7 @@ public class Robot extends TimedRobot {
     t = j1.getRawAxis(2);
     b = j1.getRawButton(2);
     dpad = j1.getPOV();
-    drive(-y, x, 1);
+    drive(-y, x*.75, 0);
     if (b && !debounce && !b1) {
       b1 = true;
       debounce = true;
@@ -154,7 +158,7 @@ public class Robot extends TimedRobot {
       debounce = true;
       b1 = false;
     }
-    if (b1) {
+    if (!b1) {
       s2.set(true);
       s1.set(false);
     } else {
