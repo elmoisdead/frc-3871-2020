@@ -92,12 +92,12 @@ public class Robot extends TimedRobot {
     m4.setOpenLoopRampRate(rr);
     m5.setOpenLoopRampRate(rr);
     m6.setOpenLoopRampRate(rr);
-   // m1.set(s + t);
-    m3.set(s + t);
-    m5.set(s + t);
-   // m2.set(-s + t);
-    m4.set(-s + t);
-    m6.set(-s + t);
+    m1.set(-s + t);
+    m3.set(-s + t);
+    m5.set(-s + t);
+    m2.set(s + t);
+    m4.set(s + t);
+    m6.set(s + t);
   }
 
   @Override
