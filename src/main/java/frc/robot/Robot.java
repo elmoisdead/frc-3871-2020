@@ -14,14 +14,14 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
-
+import edu.wpi.first.wpilibj.SerialPort;
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "aaaaaa";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
-
+  Timer time = new Timer();
+  SerialPort comm = new SerialPort(19200,SerialPort.Port.kUSB);
   Joystick j1 = new Joystick(0);
   Joystick j2 = new Joystick(1);
 
@@ -50,7 +50,21 @@ public class Robot extends TimedRobot {
   boolean b = false;
   boolean b1 = false;
   boolean debounce = false;
-
+  int grabDist()
+  {
+    comm.writeString("i\n");
+    time.delay(.05);
+    final int dst;
+    final String unparsed = comm.readString();
+    
+    if (unparsed.matches("^[0-9]+$")){
+      dst=Integer.parseInt(unparsed);
+    } else {
+      dst=0;
+    }
+    //System.out.println(dst);
+    return dst;
+  }
   /* void Update_Limelight_Tracking() {
 
     final double STEER_K = 0.005;
@@ -86,6 +100,34 @@ public class Robot extends TimedRobot {
   } */
 
   public void drive(double s, double t, double rr) {
+    m1.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    m2.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    m3.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    m4.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    m5.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    m6.setIdleMode(CANSparkMax.IdleMode.kCoast);
+
+    m1.setOpenLoopRampRate(rr);
+    m2.setOpenLoopRampRate(rr);
+    m3.setOpenLoopRampRate(rr);
+    m4.setOpenLoopRampRate(rr);
+    m5.setOpenLoopRampRate(rr);
+    m6.setOpenLoopRampRate(rr);
+    m1.set(-s + t);
+    m3.set(-s + t);
+    m5.set(-s + t);
+    m2.set(s + t);
+    m4.set(s + t);
+    m6.set(s + t);
+  }
+  public void driveBrake(double s, double t, double rr) {
+    m1.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    m2.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    m3.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    m4.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    m5.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    m6.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
     m1.setOpenLoopRampRate(rr);
     m2.setOpenLoopRampRate(rr);
     m3.setOpenLoopRampRate(rr);
@@ -137,7 +179,9 @@ public class Robot extends TimedRobot {
     else {
       drive(0, 0, 0);
     } */
-
+    final double spd = (grabDist()-10);
+    System.out.println(spd/200);
+    drive(spd/200, 0, 0);
   }
 
   @Override
