@@ -37,11 +37,16 @@ public class Robot extends TimedRobot {
   Compressor c = new Compressor(0);
   Solenoid s1 = new Solenoid(0);
   Solenoid s2 = new Solenoid(1);
+  Solenoid s3 = new Solenoid(2);
+  Solenoid s4 = new Solenoid(3);
 
   double x;
   double y;
   double t;
   int dpad;
+
+  double something;
+  double autoStopDist = 10;
   
   /* private boolean m_LimelightHasValidTarget = false;
   private double m_LimelightDriveCommand = 0.0;
@@ -160,6 +165,17 @@ public class Robot extends TimedRobot {
 
     System.out.println("Auto selected: " + m_autoSelected);
     
+    
+    something = grabDist();
+    while (something!=autoStopDist)
+    {
+      something = grabDist();
+      final double spd = (something-autoStopDist);
+      System.out.println(spd/200);
+      drive(spd/200, 0, 0);
+    }
+    drive(0,0,0);
+    //solenoid crap here idk
 
   }
 
@@ -179,9 +195,7 @@ public class Robot extends TimedRobot {
     else {
       drive(0, 0, 0);
     } */
-    final double spd = (grabDist()-10);
-    System.out.println(spd/200);
-    drive(spd/200, 0, 0);
+    
   }
 
   @Override
