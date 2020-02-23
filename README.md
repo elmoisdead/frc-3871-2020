@@ -1,3 +1,2 @@
-# wgtnRobotics2020
-please ignore thanks
-nothing important heeeere
+# Team 3871
+what do i put here lmao
