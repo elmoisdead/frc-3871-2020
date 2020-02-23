@@ -15,13 +15,14 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.SerialPort;
+
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "aaaaaa";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   Timer time = new Timer();
-  SerialPort comm = new SerialPort(19200,SerialPort.Port.kUSB);
+  SerialPort comm = new SerialPort(19200, SerialPort.Port.kUSB);
   Joystick j1 = new Joystick(0);
   Joystick j2 = new Joystick(1);
 
@@ -40,69 +41,32 @@ public class Robot extends TimedRobot {
   Solenoid s3 = new Solenoid(2);
   Solenoid s4 = new Solenoid(3);
 
-  //double x;
-  //double y;
-  //double t;
- // int dpad;
+  // double x;
+  // double y;
+  // double t;
+  // int dpad;
 
   double something;
   double autoStopDist = 15;
-  
-  /* private boolean m_LimelightHasValidTarget = false;
-  private double m_LimelightDriveCommand = 0.0;
-  private double m_LimelightSteerCommand = 0.0;
-  private double ta; */
-  //boolean b = false;
+
+  // boolean b = false;
   boolean b1 = false;
   boolean debounce = false;
-  int grabDist()
-  {
+
+  int grabDist() {
     comm.writeString("i\n");
     time.delay(.025);
     final int dst;
     final String unparsed = comm.readString();
-    
-    if (unparsed.matches("^[0-9]+$")){
-      dst=Integer.parseInt(unparsed);
+
+    if (unparsed.matches("^[0-9]+$")) {
+      dst = Integer.parseInt(unparsed);
     } else {
-      dst=0;
+      dst = 0;
     }
-    //System.out.println(dst);
+    // System.out.println(dst);
     return dst;
   }
-  /* void Update_Limelight_Tracking() {
-
-    final double STEER_K = 0.005;
-    final double DRIVE_K = 0.26;
-    final double DESIRED_TARGET_AREA = 0.7833;
-    final double MAX_DRIVE = 0.5;
-
-    double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
-    double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-    ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
-
-    if (tv < 1.0)
-
-    {
-      m_LimelightHasValidTarget = false;
-      m_LimelightDriveCommand = 0.0;
-      m_LimelightSteerCommand = 0.0;
-      
-    }
-
-    m_LimelightHasValidTarget = true;
-
-    double steer_cmd = tx * STEER_K;
-    m_LimelightSteerCommand = steer_cmd;
-
-    double drive_cmd = (DESIRED_TARGET_AREA - ta) * DRIVE_K;
-
-    if (drive_cmd > MAX_DRIVE) {
-      drive_cmd = MAX_DRIVE;
-    }
-    m_LimelightDriveCommand = drive_cmd;
-  } */
 
   public void drive(double s, double t, double rr) {
     m1.setIdleMode(CANSparkMax.IdleMode.kCoast);
@@ -125,6 +89,7 @@ public class Robot extends TimedRobot {
     m4.set(s + t);
     m6.set(s + t);
   }
+
   public void driveBrake(double s, double t, double rr) {
     m1.setIdleMode(CANSparkMax.IdleMode.kBrake);
     m2.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -146,22 +111,22 @@ public class Robot extends TimedRobot {
     m4.set(s + t);
     m6.set(s + t);
   }
-  public void up()
-  {
+
+  public void up() {
     s3.set(false);
     s4.set(true);
   }
-  public void down()
-  {
+
+  public void down() {
     s3.set(true);
     s4.set(false);
   }
+
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("low", kDefaultAuto);
     m_chooser.addOption("high", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-    /* NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1); */
     down();
   }
 
@@ -174,18 +139,16 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
 
     System.out.println("Auto selected: " + m_autoSelected);
-    
+
     grabDist();
-    while (something!=autoStopDist)
-    {
+    while (something != autoStopDist) {
       something = grabDist();
-      final double spd = (something-autoStopDist);
-      System.out.println(spd/200);
-      driveBrake(Math.max(Math.min(spd/200,.075),-.075), 0, 0);
+      final double spd = (something - autoStopDist);
+      System.out.println(spd / 200);
+      driveBrake(Math.max(Math.min(spd / 200, .075), -.075), 0, 0);
     }
     something = 0;
-    driveBrake(0,0,0);
-    //solenoid crap here idk 
+    driveBrake(0, 0, 0);
     time.delay(2);
     up();
     time.delay(3);
@@ -194,34 +157,19 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    /* NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
-    Update_Limelight_Tracking();
 
-    if (m_LimelightHasValidTarget) {
-      s2.set(true);
-      s1.set(false);
-      drive(m_LimelightDriveCommand, m_LimelightSteerCommand, 0);
-      System.out.println(ta);
-
-    }
-
-    else {
-      drive(0, 0, 0);
-    } */
-    
   }
 
   @Override
   public void teleopPeriodic() {
-    /* NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1); */
     final double x = j1.getX();
     final double y = j1.getY();
-    final double  t = j1.getRawAxis(2);
-    final double  t2 = j1.getRawAxis(3);
+    final double t = j1.getRawAxis(2);
+    final double t2 = j1.getRawAxis(3);
     final boolean b = j1.getRawButton(2);
-    //final boolean boot = j1.getRawButton(3);
+    // final boolean boot = j1.getRawButton(3);
     final int dpad = j1.getPOV();
-    
+
     if (b && !debounce && !b1) {
       b1 = true;
       debounce = true;
@@ -234,11 +182,11 @@ public class Robot extends TimedRobot {
     if (!b1) {
       s2.set(true);
       s1.set(false);
-      drive(-y, x*.25, 0.2);
+      drive(-y, x * .25, 0.2);
     } else {
       s2.set(false);
       s1.set(true);
-      drive(-y, x*.125, 0.2);
+      drive(-y, x * .125, 0.2);
     }
 
     switch (dpad) {
@@ -252,7 +200,7 @@ public class Robot extends TimedRobot {
       g1.set(0);
     }
     switch (dpad) {
-      case 90:
+    case 90:
       g2.set(.75);
       break;
     case 270:
@@ -261,18 +209,17 @@ public class Robot extends TimedRobot {
     default:
       g2.set(0);
     }
-    if (t>.8)
-    {
+    if (t > .8) {
       drive(0, .3, .5);
       time.delay(.75);
-      driveBrake(0,0,0);
+      driveBrake(0, 0, 0);
     }
-    if (t2>.8){
+    if (t2 > .8) {
       up();
     } else {
       down();
     }
-    
+
   }
 
   @Override
