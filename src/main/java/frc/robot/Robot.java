@@ -40,25 +40,25 @@ public class Robot extends TimedRobot {
   Solenoid s3 = new Solenoid(2);
   Solenoid s4 = new Solenoid(3);
 
-  double x;
-  double y;
-  double t;
-  int dpad;
+  //double x;
+  //double y;
+  //double t;
+ // int dpad;
 
   double something;
-  double autoStopDist = 10;
+  double autoStopDist = 15;
   
   /* private boolean m_LimelightHasValidTarget = false;
   private double m_LimelightDriveCommand = 0.0;
   private double m_LimelightSteerCommand = 0.0;
   private double ta; */
-  boolean b = false;
+  //boolean b = false;
   boolean b1 = false;
   boolean debounce = false;
   int grabDist()
   {
     comm.writeString("i\n");
-    time.delay(.05);
+    time.delay(.025);
     final int dst;
     final String unparsed = comm.readString();
     
@@ -146,13 +146,23 @@ public class Robot extends TimedRobot {
     m4.set(s + t);
     m6.set(s + t);
   }
-
+  public void up()
+  {
+    s3.set(false);
+    s4.set(true);
+  }
+  public void down()
+  {
+    s3.set(true);
+    s4.set(false);
+  }
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("low", kDefaultAuto);
     m_chooser.addOption("high", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
     /* NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1); */
+    down();
   }
 
   @Override
@@ -165,18 +175,21 @@ public class Robot extends TimedRobot {
 
     System.out.println("Auto selected: " + m_autoSelected);
     
-    
-    something = grabDist();
+    grabDist();
     while (something!=autoStopDist)
     {
       something = grabDist();
       final double spd = (something-autoStopDist);
       System.out.println(spd/200);
-      drive(spd/200, 0, 0);
+      driveBrake(Math.max(Math.min(spd/200,.075),-.075), 0, 0);
     }
-    drive(0,0,0);
-    //solenoid crap here idk
-
+    something = 0;
+    driveBrake(0,0,0);
+    //solenoid crap here idk 
+    time.delay(2);
+    up();
+    time.delay(3);
+    down();
   }
 
   @Override
@@ -201,11 +214,13 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     /* NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1); */
-    x = j1.getX();
-    y = j1.getY();
-    t = j1.getRawAxis(2);
-    b = j1.getRawButton(2);
-    dpad = j1.getPOV();
+    final double x = j1.getX();
+    final double y = j1.getY();
+    final double  t = j1.getRawAxis(2);
+    final double  t2 = j1.getRawAxis(3);
+    final boolean b = j1.getRawButton(2);
+    //final boolean boot = j1.getRawButton(3);
+    final int dpad = j1.getPOV();
     
     if (b && !debounce && !b1) {
       b1 = true;
@@ -238,16 +253,26 @@ public class Robot extends TimedRobot {
     }
     switch (dpad) {
       case 90:
-      g2.set(.5);
+      g2.set(.75);
       break;
     case 270:
-      g2.set(-.5);
+      g2.set(-.75);
       break;
     default:
       g2.set(0);
     }
+    if (t>.8)
+    {
+      drive(0, .3, .5);
+      time.delay(.75);
+      driveBrake(0,0,0);
+    }
+    if (t2>.8){
+      up();
+    } else {
+      down();
+    }
     
-
   }
 
   @Override
