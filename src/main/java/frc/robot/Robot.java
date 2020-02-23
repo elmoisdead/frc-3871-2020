@@ -53,22 +53,22 @@ public class Robot extends TimedRobot {
   boolean b1 = false;
   boolean debounce = false;
 
-  int grabDist() {
-    comm.writeString("i\n");
-    time.delay(.025);
+  int grabDist() { //My function for our arduino sensor platform
+    comm.writeString("i\n"); //ask Arduino for sensor
+    time.delay(.025); //wait for Arduino
     final int dst;
-    final String unparsed = comm.readString();
+    final String unparsed = comm.readString(); //Read what the Arduino sent us
 
-    if (unparsed.matches("^[0-9]+$")) {
-      dst = Integer.parseInt(unparsed);
+    if (unparsed.matches("^[0-9]+$")) { //make sure its a Number, or else bad things happen
+      dst = Integer.parseInt(unparsed); // String to Integer
     } else {
-      dst = 0;
+      dst = 0; //default to 0 if something goes wrong
     }
     // System.out.println(dst);
     return dst;
   }
 
-  public void drive(double s, double t, double rr) {
+  public void drive(double s, double t, double rr) { //Drive function so we dont have to type the same thing six times, Works like `drive([speed],[turn],[ramp rate])`
     m1.setIdleMode(CANSparkMax.IdleMode.kCoast);
     m2.setIdleMode(CANSparkMax.IdleMode.kCoast);
     m3.setIdleMode(CANSparkMax.IdleMode.kCoast);
@@ -90,7 +90,7 @@ public class Robot extends TimedRobot {
     m6.set(s + t);
   }
 
-  public void driveBrake(double s, double t, double rr) {
+  public void driveBrake(double s, double t, double rr) { //same thing as above, but uses kBrake instead of kCoast
     m1.setIdleMode(CANSparkMax.IdleMode.kBrake);
     m2.setIdleMode(CANSparkMax.IdleMode.kBrake);
     m3.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -112,12 +112,12 @@ public class Robot extends TimedRobot {
     m6.set(s + t);
   }
 
-  public void up() {
+  public void up() { //dump
     s3.set(false);
     s4.set(true);
   }
 
-  public void down() {
+  public void down() { //dump'nt
     s3.set(true);
     s4.set(false);
   }
@@ -127,7 +127,7 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("low", kDefaultAuto);
     m_chooser.addOption("high", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-    down();
+    down(); //dunno if works, but here to make sure
   }
 
   @Override
@@ -140,19 +140,19 @@ public class Robot extends TimedRobot {
 
     System.out.println("Auto selected: " + m_autoSelected);
 
-    grabDist();
-    while (something != autoStopDist) {
-      something = grabDist();
-      final double spd = (something - autoStopDist);
-      System.out.println(spd / 200);
-      driveBrake(Math.max(Math.min(spd / 200, .075), -.075), 0, 0);
+    grabDist(); //sometimes the distance measurement can be offset by one, so if we run auto after we have run it before, it will immediately dump. this is a bodgy way of preventing that.
+    while (something != autoStopDist) { // while we are not in range, do:
+      something = grabDist(); //get distance to wall
+      final double spd = ((something - autoStopDist)/200); //figure out the difference so we know where to stop and divide by 200 so we don't sanic into the wall and break everything
+      System.out.println(spd); //debug
+      driveBrake(Math.max(Math.min(spd, .075), -.075), 0, 0); //drive + add a min/max so the robot doesn't go too fast when we are far away/too close
     }
-    something = 0;
-    driveBrake(0, 0, 0);
-    time.delay(2);
-    up();
-    time.delay(3);
-    down();
+    something = 0; //set variable to 0 so we don't immediately stop driving if we do auto twice.
+    driveBrake(0, 0, 0); //stop
+    time.delay(2); //wait 2 sec
+    up(); //dump
+    time.delay(3); //wait 3 sec
+    down(); //undump
   }
 
   @Override
@@ -161,7 +161,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {
+  public void teleopPeriodic() { 
     final double x = j1.getX();
     final double y = j1.getY();
     final double t = j1.getRawAxis(2);
@@ -170,7 +170,7 @@ public class Robot extends TimedRobot {
     // final boolean boot = j1.getRawButton(3);
     final int dpad = j1.getPOV();
 
-    if (b && !debounce && !b1) {
+    if (b && !debounce && !b1) { //debouce to keep the solenoid from ocillating when the button is held down
       b1 = true;
       debounce = true;
     } else if (!b && debounce) {
@@ -179,17 +179,17 @@ public class Robot extends TimedRobot {
       debounce = true;
       b1 = false;
     }
-    if (!b1) {
+    if (!b1) {  //gear shifting
       s2.set(true);
       s1.set(false);
-      drive(-y, x * .25, 0.2);
-    } else {
-      s2.set(false);
-      s1.set(true);
-      drive(-y, x * .125, 0.2);
+      drive(-y, x * .25, 0.2);    // --------
+    } else {                      //        |
+      s2.set(false);              //        Different steering profiles for high/low gears
+      s1.set(true);               //        |
+      drive(-y, x * .125, 0.2);   // --------
     }
 
-    switch (dpad) {
+    switch (dpad) { //dpad control for winch
     case 0:
       g1.set(-.5);
       break;
@@ -199,7 +199,7 @@ public class Robot extends TimedRobot {
     default:
       g1.set(0);
     }
-    switch (dpad) {
+    switch (dpad) { //dpad control for elevator
     case 90:
       g2.set(.75);
       break;
@@ -209,12 +209,12 @@ public class Robot extends TimedRobot {
     default:
       g2.set(0);
     }
-    if (t > .8) {
+    if (t > .8) {   //semi-auto for 180 turn
       drive(0, .3, .5);
       time.delay(.75);
       driveBrake(0, 0, 0);
     }
-    if (t2 > .8) {
+    if (t2 > .8) { // control for dooomper
       up();
     } else {
       down();
@@ -227,3 +227,4 @@ public class Robot extends TimedRobot {
   }
 
 }
+//hi
