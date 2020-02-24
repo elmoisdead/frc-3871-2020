@@ -55,7 +55,7 @@ public class Robot extends TimedRobot {
 
   int grabDist() { //My function for our arduino sensor platform
     comm.writeString("i\n"); //ask Arduino for sensor
-    time.delay(.025); //wait for Arduino
+    Timer.delay(.025); // wait for Arduino
     final int dst;
     final String unparsed = comm.readString(); //Read what the Arduino sent us
 
@@ -149,9 +149,9 @@ public class Robot extends TimedRobot {
     }
     something = 0; //set variable to 0 so we don't immediately stop driving if we do auto twice.
     driveBrake(0, 0, 0); //stop
-    time.delay(2); //wait 2 sec
+    Timer.delay(2); // wait 2 sec
     up(); //dump
-    time.delay(3); //wait 3 sec
+    Timer.delay(3); // wait 3 sec
     down(); //undump
   }
 
@@ -211,7 +211,7 @@ public class Robot extends TimedRobot {
     }
     if (t > .8) {   //semi-auto for 180 turn
       drive(0, .3, .5);
-      time.delay(.75);
+      Timer.delay(.75);
       driveBrake(0, 0, 0);
     }
     if (t2 > .8) { // control for dooomper
