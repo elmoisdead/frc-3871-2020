@@ -21,36 +21,36 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "aaaaaa";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-  Timer time = new Timer();
-  SerialPort comm = new SerialPort(19200, SerialPort.Port.kUSB);
-  Joystick j1 = new Joystick(0);
-  Joystick j2 = new Joystick(1);
+  Timer time = new Timer(); //timer for timing time stuff
+  SerialPort comm = new SerialPort(19200, SerialPort.Port.kUSB); //usb serial for Arduino
+  Joystick j1 = new Joystick(0); //left joystick
+  Joystick j2 = new Joystick(1); //right joystick, we dont use this so idk why its here
 
-  CANSparkMax m1 = new CANSparkMax(1, MotorType.kBrushless);
+  CANSparkMax m1 = new CANSparkMax(1, MotorType.kBrushless); //all our motors, one side is odd, the other is even
   CANSparkMax m2 = new CANSparkMax(2, MotorType.kBrushless);
   CANSparkMax m3 = new CANSparkMax(3, MotorType.kBrushless);
   CANSparkMax m4 = new CANSparkMax(4, MotorType.kBrushless);
   CANSparkMax m5 = new CANSparkMax(5, MotorType.kBrushless);
   CANSparkMax m6 = new CANSparkMax(6, MotorType.kBrushless);
 
-  VictorSP g1 = new VictorSP(0);
+  VictorSP g1 = new VictorSP(0); //motors for winch,elevator
   VictorSP g2 = new VictorSP(1);
-  Compressor c = new Compressor(0);
-  Solenoid s1 = new Solenoid(0);
+  Compressor c = new Compressor(0); //pneumatics
+  Solenoid s1 = new Solenoid(0); //gear shifting pneumatics
   Solenoid s2 = new Solenoid(1);
-  Solenoid s3 = new Solenoid(2);
+  Solenoid s3 = new Solenoid(2); //doomper pneumatics
   Solenoid s4 = new Solenoid(3);
 
   // double x;
   // double y;
-  // double t;
+  // double t;  //some variables that we don't actually need. hmmmmm.
   // int dpad;
 
-  double something;
-  double autoStopDist = 15;
+  double something; // temp public var for storing distance
+  double autoStopDist = 15; // distance in cm to stop in auto
 
   // boolean b = false;
-  boolean b1 = false;
+  boolean b1 = false;       //debounce stuff, don't touch, bad!
   boolean debounce = false;
 
   int grabDist() { //My function for our arduino sensor platform
@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
     final int dst;
     final String unparsed = comm.readString(); //Read what the Arduino sent us
 
-    if (unparsed.matches("^[0-9]+$")) { //make sure its a Number, or else bad things happen
+    if (unparsed.matches("^[0-9]+$")) { //make sure its a Number, or else bad things happen (from experience lmao)
       dst = Integer.parseInt(unparsed); // String to Integer
     } else {
       dst = 0; //default to 0 if something goes wrong
