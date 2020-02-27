@@ -182,19 +182,19 @@ public class Robot extends TimedRobot {
     if (!b1) {  //gear shifting
       s2.set(true);
       s1.set(false);
-      drive(-y, x * .25, 0.2);    // --------
+      drive(-y, x * .25, 0.5);    // --------
     } else {                      //        |
       s2.set(false);              //        Different steering profiles for high/low gears
       s1.set(true);               //        |
-      drive(-y, x * .125, 0.2);   // --------
+      drive(-y, x * .125, 0.5);   // --------
     }
 
     switch (dpad) { //dpad control for winch
     case 0:
-      g1.set(-.5);
+      g1.set(-.50);
       break;
     case 180:
-      g1.set(.5);
+      g1.set(.50);
       break;
     default:
       g1.set(0);
