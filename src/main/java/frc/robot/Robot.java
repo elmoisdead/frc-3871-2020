@@ -15,12 +15,10 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.SerialPort;
-
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "aaaaaa";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  boolean stayOutOfTheWayMode=true;
+  String[] autoList = {"take dump","don't take dump"};
+  
   Timer time = new Timer(); //timer for timing time stuff
   SerialPort comm = new SerialPort(19200, SerialPort.Port.kUSB); //usb serial for Arduino
   Joystick j1 = new Joystick(0); //left joystick
@@ -124,9 +122,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("low", kDefaultAuto);
-    m_chooser.addOption("high", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
     down(); //dunno if works, but here to make sure
   }
 
@@ -136,23 +131,33 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
+    
 
-    System.out.println("Auto selected: " + m_autoSelected);
+    if (stayOutOfTheWayMode) { //if we want to stay out of the way,
+      drive(-.075, 0, 0); // move back
+      Timer.delay(5); // wait 5 seconds
+      drive(0, 0, 0); //stop
+    } else { //else, move forward and dump at goal
 
-    grabDist(); //sometimes the distance measurement can be offset by one, so if we run auto after we have run it before, it will immediately dump. this is a bodgy way of preventing that.
-    while (something != autoStopDist) { // while we are not in range, do:
-      something = grabDist(); //get distance to wall
-      final double spd = ((something - autoStopDist)/200); //figure out the difference so we know where to stop and divide by 200 so we don't sanic into the wall and break everything
-      System.out.println(spd); //debug
-      driveBrake(Math.max(Math.min(spd, .075), -.075), 0, 0); //drive + add a min/max so the robot doesn't go too fast when we are far away/too close
+      grabDist(); // sometimes the distance measurement can be offset by one, so if we run auto
+                  // after we have run it before, it will immediately dump. this is a bodgy way of
+                  // preventing that.
+      while (something != autoStopDist) { // while we are not in range, do:
+        something = grabDist(); // get distance to wall
+        final double spd = ((something - autoStopDist) / 200); // figure out the difference so we know where to stop and
+                                                               // divide by 200 so we don't sanic into the wall and
+                                                               // break everything
+        System.out.println(spd); // debug
+        driveBrake(Math.max(Math.min(spd, .075), -.075), 0, 0); // drive + add a min/max so the robot doesn't go too
+                                                                // fast when we are far away/too close
+      }
+      something = 0; // set variable to 0 so we don't immediately stop driving if we do auto twice.
+      driveBrake(0, 0, 0); // stop
+      Timer.delay(2); // wait 2 sec
+      up(); // dump
+      Timer.delay(3); // wait 3 sec
+      down(); // undump
     }
-    something = 0; //set variable to 0 so we don't immediately stop driving if we do auto twice.
-    driveBrake(0, 0, 0); //stop
-    Timer.delay(2); // wait 2 sec
-    up(); //dump
-    Timer.delay(3); // wait 3 sec
-    down(); //undump
   }
 
   @Override
@@ -182,11 +187,11 @@ public class Robot extends TimedRobot {
     if (!b1) {  //gear shifting
       s2.set(true);
       s1.set(false);
-      drive(-y, x * .2, .75);    // --------
+      drive(-y, x * .2, .375);    // --------
     } else {                      //        |
       s2.set(false);              //        Different steering profiles for high/low gears
       s1.set(true);               //        |
-      drive(-y, x * .2, .5);   // --------
+      drive(-y, x * .2, .25);   // --------
     }
 
     switch (dpad) { //dpad control for winch
@@ -224,6 +229,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {
+    
   }
 
 }
