@@ -182,11 +182,11 @@ public class Robot extends TimedRobot {
     if (!b1) {  //gear shifting
       s2.set(true);
       s1.set(false);
-      drive(-y, x * .25, 0.5);    // --------
+      drive(-y, x * .2, .75);    // --------
     } else {                      //        |
       s2.set(false);              //        Different steering profiles for high/low gears
       s1.set(true);               //        |
-      drive(-y, x * .125, 0.5);   // --------
+      drive(-y, x * .2, .5);   // --------
     }
 
     switch (dpad) { //dpad control for winch
@@ -211,7 +211,7 @@ public class Robot extends TimedRobot {
     }
     if (t > .8) {   //semi-auto for 180 turn
       drive(0, .3, .5);
-      Timer.delay(.75);
+      Timer.delay(1.2);
       driveBrake(0, 0, 0);
     }
     if (t2 > .8) { // control for dooomper
