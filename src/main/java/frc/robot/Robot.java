@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.SerialPort;
 public class Robot extends TimedRobot {
-  boolean stayOutOfTheWayMode=true;
+  boolean stayOutOfTheWayMode=false;
   String[] autoList = {"take dump","don't take dump"};
   
   Timer time = new Timer(); //timer for timing time stuff
@@ -134,9 +134,12 @@ public class Robot extends TimedRobot {
     
 
     if (stayOutOfTheWayMode) { //if we want to stay out of the way,
-      drive(-.075, 0, 0); // move back
-      Timer.delay(5); // wait 5 seconds
+      drive(.075, 0, 0); // move back
+      Timer.delay(3); // wait 5 seconds
       drive(0, 0, 0); //stop
+      //up();
+      //Timer.delay(3);
+      //down();
     } else { //else, move forward and dump at goal
 
       grabDist(); // sometimes the distance measurement can be offset by one, so if we run auto
